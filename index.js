@@ -22,14 +22,15 @@ app.use(function (req, res, next) {
 app.post('/signup', function (req, res) {
   connection.query(`insert into user values('${req.body.id}', '${req.body.password}')`, (err, results, fields) => {
     if (err) res.json({ error: err })
-    else res.json({ data: results })
+    else res.status(200).json({ data: results })
   })
 })
 
-app.get('/signin', function (req, res) {
-  connection.query(`select * from user where id = '${req.body.id}' and password = '${req.body.password}')`, (err, results, fields) => {
+app.post('/signin', function (req, res) {
+  connection.query(`select * from user where id = '${req.body.id}' and password = '${req.body.password}'`, (err, results, fields) => {
     if (err) res.json({ error: err })
-    else res.json({ data: results })
+    else if (Object.keys(results).length > 0) res.status(200).json({ data: results })
+    else res.status(201).json({data:results}) 
   })
 })
 
